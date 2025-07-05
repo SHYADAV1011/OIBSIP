@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Temperature Converter</title>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --dark: #292F36;
+            --light: #F7FFF7;
+            --accent: #FFE66D;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--light);
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(41, 47, 54, 0.85);
+            z-index: 1;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 2;
+            background-color: rgba(41, 47, 54, 0.9);
+            border-radius: 15px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .flask-icon {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .radio-group {
+            margin-bottom: 25px;
+        }
+        
+        .radio-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .radio-option {
+            flex: 1;
+        }
+        
+        .radio-option input {
+            display: none;
+        }
+        
+        .radio-option label {
+            display: block;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .radio-option input:checked + label {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        button:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .result {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(78, 205, 196, 0.2);
+            border-radius: 8px;
+            border: 2px solid var(--secondary);
+            font-size: 1.2rem;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .result-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+        
+        .result-unit {
+            font-size: 1rem;
+            color: var(--secondary);
+        }
+        
+        .error {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .radio-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="flask-icon">
+            <i class="fas fa-temperature-high"></i>
+        </div>
+        <h1>Chemistry Temperature Converter</h1>
+        
+        <div class="input-group">
+            <label for="temperature">Enter Temperature:</label>
+            <input type="number" id="temperature" placeholder="e.g. 100" step="0.01">
+            <div id="temperature-error" class="error"></div>
+        </div>
+        
+        <div class="radio-group">
+            <label>Convert From:</label>
+            <div class="radio-options">
+                <div class="radio-option">
+                    <input type="radio" id="celsius" name="from-unit" value="celsius" checked>
+                    <label for="celsius">Celsius (°C)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="fahrenheit" name="from-unit" value="fahrenheit">
+                    <label for="fahrenheit">Fahrenheit (°F)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="kelvin" name="from-unit" value="kelvin">
+                    <label for="kelvin">Kelvin (K)</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="radio-group">
+            <label>Convert To:</label>
+            <div class="radio-options">
+                <div class="radio-option">
+                    <input type="radio" id="to-celsius" name="to-unit" value="celsius">
+                    <label for="to-celsius">Celsius (°C)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="to-fahrenheit" name="to-unit" value="fahrenheit" checked>
+                    <label for="to-fahrenheit">Fahrenheit (°F)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="to-kelvin" name="to-unit" value="kelvin">
+                    <label for="to-kelvin">Kelvin (K)</label>
+                </div>
+            </div>
+        </div>
+        
+        <button id="convert-btn">Convert</button>
+        
+        <div class="result" id="result">
+            <div class="result-value">--</div>
+            <div class="result-unit">Select options and click convert</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const temperatureInput = document.getElementById('temperature');
+            const convertBtn = document.getElementById('convert-btn');
+            const resultValue = document.querySelector('.result-value');
+            const resultUnit = document.querySelector('.result-unit');
+            const errorElement = document.getElementById('temperature-error');
+            
+            convertBtn.addEventListener('click', function() {
+                // Clear previous error
+                errorElement.textContent = '';
+                
+                // Validate input
+                if (temperatureInput.value === '') {
+                    errorElement.textContent = 'Please enter a temperature value';
+                    return;
+                }
+                
+                if (isNaN(temperatureInput.value)) {
+                    errorElement.textContent = 'Please enter a valid number';
+                    return;
+                }
+                
+                const temperature = parseFloat(temperatureInput.value);
+                const fromUnit = document.querySelector('input[name="from-unit"]:checked').value;
+                const toUnit = document.querySelector('input[name="to-unit"]:checked').value;
+                
+                // Don't convert if same units
+                if (fromUnit === toUnit) {
+                    resultValue.textContent = temperature.toFixed(2);
+                    resultUnit.textContent = getUnitName(toUnit);
+                    return;
+                }
+                
+                // Perform conversion
+                let convertedTemp;
+                
+                // Convert to Celsius first if needed
+                let tempInCelsius;
+                switch(fromUnit) {
+                    case 'celsius':
+                        tempInCelsius = temperature;
+                        break;
+                    case 'fahrenheit':
+                        tempInCelsius = (temperature - 32) * 5/9;
+                        break;
+                    case 'kelvin':
+                        tempInCelsius = temperature - 273.15;
+                        break;
+                }
+                
+                // Convert from Celsius to target unit
+                switch(toUnit) {
+                    case 'celsius':
+                        convertedTemp = tempInCelsius;
+                        break;
+                    case 'fahrenheit':
+                        convertedTemp = (tempInCelsius * 9/5) + 32;
+                        break;
+                    case 'kelvin':
+                        convertedTemp = tempInCelsius + 273.15;
+                        break;
+                }
+                
+                // Display result
+                resultValue.textContent = convertedTemp.toFixed(2);
+                resultUnit.textContent = getUnitName(toUnit);
+            });
+            
+            function getUnitName(unit) {
+                switch(unit) {
+                    case 'celsius': return 'Degrees Celsius (°C)';
+                    case 'fahrenheit': return 'Degrees Fahrenheit (°F)';
+                    case 'kelvin': return 'Kelvin (K)';
+                    default: return '';
+                }
+            }
+            
+            // Allow only numbers and decimal point in input
+            temperatureInput.addEventListener('keydown', function(e) {
+                // Allow: backspace, delete, tab, escape, enter, decimal point
+                if ([46, 8, 9, 27, 13, 110, 190].includes(e.keyCode) ||
+                    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    (e.keyCode === 65 && e.ctrlKey === true) ||
+                    (e.keyCode === 67 && e.ctrlKey === true) ||
+                    (e.keyCode === 86 && e.ctrlKey === true) ||
+                    (e.keyCode === 88 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        return;
+                }
+                // Ensure that it is a number and stop the keypress if not
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
